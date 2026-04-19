@@ -1,0 +1,23 @@
+[package]
+name = "fixmyborderpls"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+winres = "0.1"
+
+[dependencies]
+tray-icon = "0.19"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs-next = "2"
+winapi = { version = "0.3", features = [
+    "dwmapi", "winuser", "windef", "minwindef",
+    "winreg", "winnt", "shellapi",
+    "psapi", "processthreadsapi", "handleapi"
+] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
