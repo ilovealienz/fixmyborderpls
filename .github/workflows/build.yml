@@ -1,12 +1,13 @@
-name: Build
+name: Build and Release
 
 on:
   push:
     branches: [main]
     tags:
       - "v*"
-  release:
-    types: [created]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -18,31 +19,28 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-pc-windows-msvc
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      - name: Install dependencies
+        run: pip install pillow
+
       - name: Generate icons
-        run: |
-          pip install pillow
-          python make_icon.py
+        run: python make_icon.py
 
       - name: Build release
         run: cargo build --release
 
-      - name: Upload exe
-        uses: actions/upload-artifact@v4
-        with:
-          name: fixmyborderpls
-          path: target\release\fixmyborderpls.exe
+      - name: Debug output (optional but useful)
+        run: dir target\release
 
-      # If this was triggered by a GitHub release, attach the exe to it
-      - name: Attach to release
-        if: github.event_name == 'release'
+      - name: Create GitHub Release and upload asset
         uses: softprops/action-gh-release@v2
         with:
-          files: target\release\fixmyborderpls.exe
+          tag_name: ${{ github.ref_name }}
+          files: target/release/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
