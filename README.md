@@ -59,7 +59,3 @@ After saving, right-click the tray icon and click **Reload config**.
 ## Anticheat
 
 Safe to run alongside anticheats. Only uses `DwmSetWindowAttribute` — the same Windows API every modern app uses for its own border colour. No process injection, no hooks, no memory reading.
-
-## License
-
-MIT
